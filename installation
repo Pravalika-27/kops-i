@@ -1,0 +1,36 @@
+Step 1: Launch Instance with t2.micro and take 20GB SSD 
+Step 2: Install AWS CLI 
+ - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" 
+ - unzip awscliv2.zip 
+ - sudo ./aws/install 
+ - vim .bashrc 
+ - export PATH=$PATH:/usr/local/bin 
+ - source .bashrc 
+ - aws --version 
+ 
+Step 3: Install KOPS and kubectl 
+ - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" 
+ - wget https://github.com/kubernetes/kops/releases/download/v1.24.1/kops-linux-amd64 
+ - chmod +x kops-linux-amd64 kubectl 
+ - mv kubectl /usr/local/bin/kubectl 
+ - mv kops-linux-amd64  /usr/local/bin/kops 
+ - kubectl version & kops version 
+ 
+Step 4: Create an IAM User with Administration Access and configure it with CLI in any region 
+Step 5: Create Infrastructure 
+ - Create Bucket: aws s3api create-bucket --bucket suneel.k8s.local --region us-east-1 
+ - Enable Versioning for that bucket 
+ - Export Cluster Data to Bucket: export KOPS_STATE_STORE=s3://suneel.k8s.local 
+ - Generate a Key: ssh-keygen 
+ - To Create Cluster: kops create cluster --name suneel.k8s.local --zones us-east-1a --master-size t2.medium --node-size t2.micro 
+Update the Cluster: kops update cluster --name suneel.k8s.local --yes --admin
+kops delete cluster --name pravalika.k8s.local --yes
+
+
+
+
+Suggestions:
+ * list clusters with: kops get cluster
+ * edit this cluster with: kops edit cluster pravalika.k8s.local
+ * edit your node instance group: kops edit ig --name=pravalika.k8s.local nodes-us-east-1a
+ * edit your master instance group: kops edit ig --name=pravalika.k8s.local master-us-east-1a
